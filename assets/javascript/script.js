@@ -1,35 +1,45 @@
 var database = firebase.database();
 
 var connectionsRef = database.ref("/connections");
-var connected = database.ref(".info/connected");
+var connectedStatus = database.ref(".info/connected");
 
 var userID;
-connected.on("value", function(snapshot) {
 
-    // console.log(snapshot.val())
-
-    if (snapshot.val()) {
-        // userID = generateHash();
-        var tempCon = connectionsRef.push(false);
+function generateHash() {
+    connectionsRef.once("value", function(snapshot) {
+        var tempID, exists;
+        do {
+            exists = false;
+            tempID = Math.floor(Math.random() * 1000000);
+            snapshot.forEach(function(childsnap){
+                if (childsnap.val() === tempID.toString()){
+                    exists = true;
+                }
+            });
+        } while (exists);
+        var tempCon = connectionsRef.push(tempID.toString());   
         tempCon.onDisconnect().remove();
-    }
-    // if (snapshot.val()) {
-    //     var exists = true;
-    //     do {
-    //     userID = generateHash();
-    //     connectionsRef.child(userID).once("value", function(snapshot2) {
-    //         exists = snapshot2.val() !== null;
-    //     });
-    //     } while (exists);
-        
-    //     var con = connectionsRef.push(userID);
+        return tempID;
+    });
+}
 
-    //     con.onDisconnect().remove();
-    // }
+connectedStatus.on("value", function(snapshot) {
+    if (snapshot.val()) {
+        userID = generateHash();
+        
+    }
 });
 
-connectionsRef.on("child_added", function (childSnapshot, prevChildKey) {
-    $("#connected").append(childSnapshot.val())
+
+
+connectionsRef.on("value", function (snapshot) {
+    $("#connected").empty();
+    console.log(snapshot.val())
+    var queue = Object.keys(snapshot.val())
+    queue.forEach(function (child){
+        $("#connected").append($("<p>").text(snapshot.val()[child]))
+    })
+
 });
 
 $(document).on("click", "#chat-submit", function(event){
@@ -39,21 +49,13 @@ $(document).on("click", "#chat-submit", function(event){
     $("#chat-input").val("");
 
     database.ref("/chat").push(chat);
+    
+    database.ref("/chat").limitToFirst(2).on("value", function(snap){
+        console.log("WELKIGHDSL ", snap.val())
+    })
 });
 
 database.ref("/chat").on("child_added", function (childSnapshot, prevChildKey) {
     $("#chat-display").append($("<p>").text(childSnapshot.val()));
     $("#chat-display").scrollTop($("#chat-display").prop("scrollHeight"));
 })
-
-function generateHash() {
-    var tempID = Math.floor(Math.random() * 999999);
-    connectionsRef.once("value", function(snapshot) {
-        if (snapshot.child(tempID).val() !== null) {
-            return generateHash();
-        } else {
-            return tempID;
-        }
-    });
-}
-console.log(generateHash())
