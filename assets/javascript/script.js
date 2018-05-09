@@ -4,6 +4,7 @@ var connectionsRef = database.ref("/connections");
 var connectedStatus = database.ref(".info/connected");
 
 var userID;
+var connected = false;
 
 function generateHash() {
     connectionsRef.once("value", function(snapshot) {
@@ -12,12 +13,17 @@ function generateHash() {
             exists = false;
             tempID = Math.floor(Math.random() * 1000000);
             snapshot.forEach(function(childsnap){
-                if (childsnap.val() === tempID.toString()){
+                if (childsnap.val().id === tempID.toString()){
                     exists = true;
                 }
             });
         } while (exists);
-        var tempCon = connectionsRef.push(tempID.toString());   
+        var connectionItem = {
+            id: tempID.toString(),
+            name: "player " + tempID.toString(),
+            status: "queue"
+        }
+        var tempCon = connectionsRef.push(connectionItem);   
         tempCon.onDisconnect().remove();
         return tempID;
     });
@@ -30,16 +36,16 @@ connectedStatus.on("value", function(snapshot) {
     }
 });
 
-
+connectionsRef.on("child_removed", function(snapshot) {
+    if (snapshot.val().statu !== "queue"){
+        var dcMessage = snapshot.val().name + " has disconnected.";
+        database.ref("/chat").push(dcMessage);
+    }
+});
 
 connectionsRef.on("value", function (snapshot) {
-    $("#connected").empty();
     console.log(snapshot.val())
-    var queue = Object.keys(snapshot.val())
-    queue.forEach(function (child){
-        $("#connected").append($("<p>").text(snapshot.val()[child]))
-    })
-
+    $("#connected").append($("<p>").text(snapshot.val().id))
 });
 
 $(document).on("click", "#chat-submit", function(event){
@@ -51,7 +57,6 @@ $(document).on("click", "#chat-submit", function(event){
     database.ref("/chat").push(chat);
     
     database.ref("/chat").limitToFirst(2).on("value", function(snap){
-        console.log("WELKIGHDSL ", snap.val())
     })
 });
 
