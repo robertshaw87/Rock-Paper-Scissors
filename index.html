@@ -22,7 +22,7 @@
 <body>
     <header class="container-fluid">
         <div class="row">
-            <div class="jumbotron col text-center p-4">
+            <div class="jumbotron col bg-dark text-light text-center p-4">
                 <h1 class="display-4">Rock Paper Scissors</h1>
             </div>
         </div>
@@ -46,22 +46,18 @@
 
     <main class="container-fluid hidden" id="rps-body">
         <div class="row">
-            <div class="col-0 col-md-1 col-lg-2"></div>
-            <div class="col-12 col-md-4 col-lg-3" id="player-one"></div>
             <div class="col-0 col-md-0 col-lg-1"></div>
-            <div class="col-12 col-md-6 col-lg-6" id="player-two"></div>
-            <div class="col-0 col-md-1 col-lg-2"></div>
+            <div class="col-12 col-md-3 col-lg-3"id="player-one"></div>
+            <div class="col-12 col-md-9 col-lg-7 text-center position-relative">
+                <div class="row" id="messages"></div>
+            </div>
+            <div class="col-0 col-md-0 col-lg-1"></div>
         </div>
         <div class="row">
-            <div class="col-0 col-md-1 col-lg-2"></div>
-            <div class="col text-center" id="messages"></div>
-            <div class="col-0 col-md-1 col-lg-2"></div>
-        </div>
-        <div class="row">
-            <div class="col-0 col-md-1 col-lg-2"></div>
-            <div class="col-12 col-md-7 col-lg-6">
+            <div class="col-0 col-md-0 col-lg-1"></div>
+            <div class="col-12 col-md-8 col-lg-7">
                 <div class="card mt-5" id="chat-card">
-                    <div class="card-header bg-dark text-light text-center p-3"><h4>Player Chat</h4></div>
+                    <div class="card-header bg-dark text-light text-center p-2"><h4>Player Chat</h4></div>
                     <div class="card-text" id="chat-display"></div>
                     <form class="input-group hidden" id="chat-box">
                         <input class="form-control" id="chat-input" type=text>
@@ -71,13 +67,13 @@
                     </form>
                 </div>
             </div>
-            <div class="col-6 col-md-3 col-lg-2">
+            <div class="col-6 col-md-4 col-lg-3">
                 <div class="card mt-5" id="queue-card">
-                    <div class="card-header bg-dark text-light text-center p-3"><h4>Connected</h4></div>
+                    <div class="card-header bg-dark text-light text-center p-2"><h4>Queue</h4></div>
                     <div class="card-text" id="connected"></div>
                 </div>
             </div>
-            <div class="col-0 col-md-1 col-lg-2"></div>
+            <div class="col-0 col-md-0 col-lg-1"></div>
         </div>
     </main>
 

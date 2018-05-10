@@ -34,7 +34,7 @@ function generateHash() {
 
 function showScore() {
     var wrapperCard = $("<div>");
-    wrapperCard.addClass("Card m-0 p-2 bg-light");
+    wrapperCard.addClass("Card bg-light");
     var cardHeader = $("<h3>").addClass("card-header bg-dark text-light p-2 text-center player-card-header");
     cardHeader.text("Your Score");
     wrapperCard.append(cardHeader);
@@ -59,9 +59,30 @@ function showScore() {
     $("#player-one").html(wrapperCard);
 }
 
+function rpsSelect() {
+    $("#messages").empty();
+    var rock = $("<img>").attr("src", "assets/images/rock.png");
+    rock.addClass("rpsChoice");
+    rock.data("rps", "rock")
+    $("#messages").append($("<div>").addClass("col-4").html(rock));
+    var paper = $("<img>").attr("src", "assets/images/paper.png");
+    paper.addClass("rpsChoice");
+    paper.data("rps", "paper")
+    $("#messages").append($("<div>").addClass("col-4").html(paper));
+    var scissors = $("<img>").attr("src", "assets/images/scissors.png");
+    scissors.addClass("rpsChoice");
+    scissors.data("rps", "scissors")
+    $("#messages").append($("<div>").addClass("col-4").html(scissors));
+}
+
+function messageArea(str){
+    $("#messages").html($("<h2>").addClass("col text-center mt-5").text(str));
+}
+
 connectedStatus.on("value", function(snapshot) {
     if (snapshot.val()) {
         inQueue = true;
+       
     }
 });
 
@@ -109,6 +130,8 @@ connectionsRef.on("value", function (snapshot) {
                 oppID = playerOne;
             }
             showScore();
+            messageArea("Get ready to ROCK, PAPER, SCISSORS!");
+            setTimeout(rpsSelect, 3000);
         }
         
     })

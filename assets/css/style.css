@@ -1,9 +1,21 @@
+body {
+    /* background-color: rgba(50, 50, 50, .9); */
+}
+
 .hidden {
     display: none;
 }
 
 .show {
     display: default;
+}
+
+#messages {
+
+}
+
+.rpsChoice {
+    height: 200px
 }
 
 #chat-display {
