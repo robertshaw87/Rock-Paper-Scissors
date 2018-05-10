@@ -1,6 +1,8 @@
 var userID, userName, oppID;
 var inQueue = false;
 var currPlaying = false;
+var maxChat = 30;
+var playerNum;
 
 var database = firebase.database();
 
@@ -12,19 +14,18 @@ var connected = false;
 
 function generateHash() {
     connectionsRef.once("value", function(snapshot) {
-        var tempID, exists;
+        var exists;
         do {
             exists = false;
-            tempID = userName + "-" + Math.floor(Math.random() * 100);
+            userID = userName + "-" + Math.floor(1 + Math.random() * 9) + Math.floor(1 + Math.random() * 9);
             snapshot.forEach(function(childsnap){
-                if (childsnap.val().id === tempID.toString()){
+                if (childsnap.val().id === userID.toString()){
                     exists = true;
                 }
             });
         } while (exists);
-        var tempCon = connectionsRef.push(tempID);   
+        var tempCon = connectionsRef.push(userID);   
         tempCon.onDisconnect().remove();
-        return tempID;
     });
 }
 
@@ -34,20 +35,47 @@ connectedStatus.on("value", function(snapshot) {
     }
 });
 
+database.ref("/chat").on("value", function (snapshot){
+    if (snapshot.val()){
+        var chatObj = snapshot.val();
+        var tempKeys = Object.keys(snapshot.val());
+        console.log(tempKeys)
+        for (var i=maxChat; i<tempKeys.length; i++) {
+            database.ref("/chat").child(tempKeys[i-maxChat]).remove();
+        }
+    }
+})
+
 connectionsRef.on("value", function (snapshot) {
    connectionsRef.limitToFirst(2).on("value", function(snap){
+        if (!snap.val()) {
+            return;
+        }
         console.log("first 2: ")
         console.log(snap.val())
         snapKeys = Object.keys(snap.val());
-        if (((snapKeys.length) < 2) && !currPlaying) {
-            database.ref("/chat").remove();
+        console.log(snapKeys)
+        if (snapKeys.length < 2) {
+            return;
         }
-        var PlayerOne = snap.val()[snapKeys[0]];
-        var PlayerTwo = snap.val()[snapKeys[1]];
-        var tempID = PlayerOne.split(" ").join("");
-        $("#"+tempID).text(PlayerOne + " (Player 1)");
-        tempID = PlayerTwo.split(" ").join("");
-        $("#"+tempID).text(PlayerTwo + " (Player 2)");
+        var playerOne = snap.val()[snapKeys[0]];
+        var playerTwo = snap.val()[snapKeys[1]];
+        var tempID = playerOne.split(" ").join("");
+        $("#"+tempID).text(playerOne + " (Player 1)");
+        tempID = playerTwo.split(" ").join("");
+        $("#"+tempID).text(playerTwo + " (Player 2)");
+        if (playerOne === userID || playerTwo === userID){
+            currPlaying = true;
+            $("#chat-box").removeClass("hidden");
+            if (playerOne === userID){
+                playerNum = 1;
+                oppID = playerTwo;
+            } else {
+                playerNum = 2;
+                oppID = playerOne;
+            }
+        }
+        
     })
 });
 
@@ -56,6 +84,7 @@ connectionsRef.on("child_removed", function(snapshot) {
         console.log("Disconnect:")
         console.log(snapshot.val())
         var dcMessage = snapshot.val() + " has disconnected.";
+        oppID = undefined;
         database.ref("/chat").push(dcMessage);
     }
     var tempID = snapshot.val().split(" ").join("");
@@ -75,7 +104,7 @@ $(document).on("click", "#name-submit", function(event){
     $("#rps-body").removeClass("hidden");
     $("#start-username").addClass("hidden");
     $("#chat-display").scrollTop($("#chat-display").prop("scrollHeight"));
-    userID = generateHash();
+    generateHash();
     } else {
         $("#username-message").text("You're not yet connected! Please try again.")
     }
@@ -85,7 +114,7 @@ $(document).on("click", "#chat-submit", function(event){
     event.preventDefault();
     var chat = userID + ": " + $("#chat-input").val().trim();
     $("#chat-input").val("");
-    if (curPlaying) {
+    if (currPlaying) {
         database.ref("/chat").push(chat);
     }
 });
