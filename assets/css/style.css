@@ -1,4 +1,24 @@
+.hidden {
+    display: none;
+}
+
+.show {
+    display: default;
+}
+
 #chat-display {
-    height: 500px;
+    height: 300px;
     overflow-y: scroll;
+}
+
+#connected {
+    height: 300px;
+    overflow-y: scroll;
+}
+
+p {
+    margin: 0;
+    padding: 0;
+    padding: 2px;
+    margin-top: 2px;
 }

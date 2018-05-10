@@ -28,19 +28,38 @@
         </div>
     </header>
 
-    <main class="container-fluid">
+    <div class="container" id="start-username">
         <div class="row">
+            <div class="col-0 col-md"></div>
+            <div class="col col-md-6 card p-0 mt-5">
+                <div class="card-header bg-dark text-light p-3" id="username-message"><h4>Please choose a user name:</h4></div>
+                <form class="input-group">
+                    <input class="form-control" id="name-input" type=text>
+                    <div class="input-group-append">
+                        <button class="btn btn-dark input-group-text p-2 pl-3 pr-3" id="name-submit" type="submit">Submit</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-0 col-md"></div>
+        </div>
+    </div>
+
+    <main class="container-fluid hidden" id="rps-body">
+        <div class="row">
+            <div class="col-0 col-md-1 col-lg-2"></div>
             <div class="col" id="player-one"></div>
+            <div class="col-1"></div>
             <div class="col" id="player-two"></div>
+            <div class="col-0 col-md-1 col-lg-2"></div>
         </div>
         <div class="row">
-            <div class="col-0 col-md-1 col-lg-3"></div>
-            <div class="col text-center" id="connected"></div>
-            <div class="col-0 col-md-1 col-lg-3"></div>
+            <div class="col-0 col-md-1 col-lg-2"></div>
+            <div class="col text-center" id="messages"></div>
+            <div class="col-0 col-md-1 col-lg-2"></div>
         </div>
         <div class="row">
-            <div class="col-0 col-md-1 col-lg-3"></div>
-            <div class="col">
+            <div class="col-0 col-md-1 col-lg-2"></div>
+            <div class="col-12 col-md-7 col-lg-6">
                 <div class="card mt-5" id="chat-card">
                     <div class="card-header bg-dark text-light text-center p-3"><h4>Player Chat</h4></div>
                     <div class="card-text" id="chat-display"></div>
@@ -52,23 +71,29 @@
                     </form>
                 </div>
             </div>
-            <div class="col-0 col-md-1 col-lg-3"></div>
+            <div class="col-6 col-md-3 col-lg-2">
+                <div class="card mt-5" id="queue-card">
+                    <div class="card-header bg-dark text-light text-center p-3"><h4>Connected</h4></div>
+                    <div class="card-text" id="connected"></div>
+                </div>
+            </div>
+            <div class="col-0 col-md-1 col-lg-2"></div>
         </div>
     </main>
 
 
     <script src="https://www.gstatic.com/firebasejs/4.13.0/firebase.js"></script>
     <script>
-      // Initialize Firebase
-      var config = {
+    // Initialize Firebase
+    var config = {
         apiKey: "AIzaSyAyXjUEDLb-F8Yx1sJxvjVk65athpPBCfY",
         authDomain: "rock-paper-scissors-5dee3.firebaseapp.com",
         databaseURL: "https://rock-paper-scissors-5dee3.firebaseio.com",
         projectId: "rock-paper-scissors-5dee3",
         storageBucket: "rock-paper-scissors-5dee3.appspot.com",
         messagingSenderId: "744807216133"
-      };
-      firebase.initializeApp(config);
+    };
+    firebase.initializeApp(config);
     </script>
 
     <!-- jQuery -->
