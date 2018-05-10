@@ -10,6 +10,11 @@ body {
     display: default;
 }
 
+.rpsWait {
+    margin-left: 10px;
+    height: 200px;
+}
+
 #messages {
 
 }

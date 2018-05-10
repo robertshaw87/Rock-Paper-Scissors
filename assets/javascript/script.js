@@ -62,14 +62,17 @@ function showScore() {
 function rpsSelect() {
     $("#messages").empty();
     var rock = $("<img>").attr("src", "assets/images/rock.png");
+    rock.attr("alt", "rock");
     rock.addClass("rpsChoice");
     rock.data("rps", "rock")
     $("#messages").append($("<div>").addClass("col-4").html(rock));
     var paper = $("<img>").attr("src", "assets/images/paper.png");
+    paper.attr("alt", "paper");
     paper.addClass("rpsChoice");
     paper.data("rps", "paper")
     $("#messages").append($("<div>").addClass("col-4").html(paper));
     var scissors = $("<img>").attr("src", "assets/images/scissors.png");
+    scissors.attr("alt", "scissors");
     scissors.addClass("rpsChoice");
     scissors.data("rps", "scissors")
     $("#messages").append($("<div>").addClass("col-4").html(scissors));
@@ -82,7 +85,11 @@ function messageArea(str){
 connectedStatus.on("value", function(snapshot) {
     if (snapshot.val()) {
         inQueue = true;
-       
+        messageArea("Welcome to the queue. A slot will become available shortly.")
+        var rpsWait = $("<img>").attr("src", "assets/images/rps-animate.gif");
+        rpsWait.attr("alt", "Rock Paper Scissors");
+        rpsWait.addClass("rpsWait");
+        $("#player-one").html(rpsWait);
     }
 });
 
@@ -155,6 +162,11 @@ connectionsRef.on("child_added", function (snapshot) {
     $("#connected").append($("<p>").attr("id", tempID).text(snapshot.val()))
 });
 
+database.ref("/chat").on("child_added", function (childSnapshot, prevChildKey) {
+    $("#chat-display").append($("<p>").text(childSnapshot.val()));
+    $("#chat-display").scrollTop($("#chat-display").prop("scrollHeight"));
+})
+
 $(document).on("click", "#name-submit", function(event){
     event.preventDefault();
     if (inQueue){
@@ -178,7 +190,6 @@ $(document).on("click", "#chat-submit", function(event){
     }
 });
 
-database.ref("/chat").on("child_added", function (childSnapshot, prevChildKey) {
-    $("#chat-display").append($("<p>").text(childSnapshot.val()));
-    $("#chat-display").scrollTop($("#chat-display").prop("scrollHeight"));
+$(document).on("click", ".rpsChoice", function(event){
+    alert($(this).data("rps"))
 })
