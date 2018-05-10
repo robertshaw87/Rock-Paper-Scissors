@@ -2,7 +2,7 @@ var userID, userName, oppID;
 var inQueue = false;
 var currPlaying = false;
 var maxChat = 30;
-var playerNum, oppID;
+var playerNum, opponentNum, oppID;
 var wins = 0;
 var losses = 0;
 var playersDefeated = 0;
@@ -85,7 +85,7 @@ function messageArea(str){
 connectedStatus.on("value", function(snapshot) {
     if (snapshot.val()) {
         inQueue = true;
-        messageArea("Welcome to the queue. A slot will become available shortly.")
+        messageArea("Welcome to the queue. The game will begin shortly.")
         var rpsWait = $("<img>").attr("src", "assets/images/rps-animate.gif");
         rpsWait.attr("alt", "Rock Paper Scissors");
         rpsWait.addClass("rpsWait");
@@ -97,7 +97,6 @@ database.ref("/chat").on("value", function (snapshot){
     if (snapshot.val()){
         var chatObj = snapshot.val();
         var tempKeys = Object.keys(snapshot.val());
-        console.log(tempKeys)
         for (var i=maxChat; i<tempKeys.length; i++) {
             database.ref("/chat").child(tempKeys[i-maxChat]).remove();
         }
@@ -109,19 +108,12 @@ connectionsRef.on("value", function (snapshot) {
         if (!snap.val()) {
             return;
         }
-        console.log("first 2: ")
-        console.log(snap.val())
         snapKeys = Object.keys(snap.val());
-        console.log(snapKeys)
         if (snapKeys.length < 2) {
             return;
         }
         var playerOne = snap.val()[snapKeys[0]];
         var playerTwo = snap.val()[snapKeys[1]];
-        console.log(userID);
-        console.log("p1, p2")
-        console.log(playerOne === userID)
-        console.log(playerTwo === userID)
         var tempID = playerOne.split(" ").join("");
         $("#"+tempID).text(playerOne + " (Player 1)");
         tempID = playerTwo.split(" ").join("");
@@ -131,13 +123,20 @@ connectionsRef.on("value", function (snapshot) {
             $("#chat-box").removeClass("hidden");
             if (playerOne === userID){
                 playerNum = "playerOne";
+                opponentNum = "playerTwo";
                 oppID = playerTwo;
             } else {
                 playerNum = "playerTwo";
+                opponentNum = "playerOne"
                 oppID = playerOne;
             }
             showScore();
             messageArea("Get ready to ROCK, PAPER, SCISSORS!");
+            database.ref("/rps/" + playerNum).set({
+                name: userID,
+                rps: "none",
+                ready: false
+            })
             setTimeout(rpsSelect, 3000);
         }
         
@@ -146,8 +145,6 @@ connectionsRef.on("value", function (snapshot) {
 
 connectionsRef.on("child_removed", function(snapshot) {
     if (snapshot.val() === oppID){
-        console.log("Disconnect:")
-        console.log(snapshot.val())
         var dcMessage = snapshot.val() + " has disconnected.";
         oppID = undefined;
         playersDefeated++;
@@ -191,5 +188,20 @@ $(document).on("click", "#chat-submit", function(event){
 });
 
 $(document).on("click", ".rpsChoice", function(event){
-    alert($(this).data("rps"))
+    database.ref("/rps/" + playerNum).set({
+        name: userID,
+        rps: $(this).data("rps"),
+        ready: false
+    })
+    database.ref("/rps").once("value", function(snapshot){
+        console.log(snapshot.val())
+        if (snapshot.val()[opponentNum].ready){
+            alert("WEEEE")
+        } else {
+            database.ref("/rps/" + playerNum).update({
+                ready: true
+            })
+        }
+
+    });
 })
