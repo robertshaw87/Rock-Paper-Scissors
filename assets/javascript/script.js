@@ -2,7 +2,10 @@ var userID, userName, oppID;
 var inQueue = false;
 var currPlaying = false;
 var maxChat = 30;
-var playerNum;
+var playerNum, oppID;
+var wins = 0;
+var losses = 0;
+var playersDefeated = 0;
 
 var database = firebase.database();
 
@@ -27,6 +30,33 @@ function generateHash() {
         var tempCon = connectionsRef.push(userID);   
         tempCon.onDisconnect().remove();
     });
+}
+
+function showScore() {
+    var wrapperCard = $("<div>");
+    wrapperCard.addClass("Card m-0 p-2 bg-light");
+    var cardHeader = $("<h3>").addClass("card-header bg-dark text-light p-2 text-center player-card-header");
+    cardHeader.text("Your Score");
+    wrapperCard.append(cardHeader);
+    var cardWins = $("<span>").attr("id", "player-wins");
+    cardWins.text(wins);
+    var cardWinsWrapper = $("<h6>").addClass("card-body player-card-body");
+    cardWinsWrapper.text("Wins: ");
+    cardWinsWrapper.append(cardWins);
+    wrapperCard.append(cardWinsWrapper);
+    var cardLosses = $("<span>").attr("id", "player-losses");
+    cardLosses.text(losses);
+    var cardLossesWrapper = $("<h6>").addClass("card-body player-card-body");
+    cardLossesWrapper.text("Losses: ");
+    cardLossesWrapper.append(cardLosses);
+    wrapperCard.append(cardLossesWrapper);
+    var cardDefeated = $("<span>").attr("id", "player-defeated");
+    cardDefeated.text(playersDefeated);
+    var cardDefeatedWrapper = $("<h6>").addClass("card-body player-card-body");
+    cardDefeatedWrapper.text("Players Defeated: ");
+    cardDefeatedWrapper.append(cardDefeated);
+    wrapperCard.append(cardDefeatedWrapper);
+    $("#player-one").html(wrapperCard);
 }
 
 connectedStatus.on("value", function(snapshot) {
@@ -60,6 +90,10 @@ connectionsRef.on("value", function (snapshot) {
         }
         var playerOne = snap.val()[snapKeys[0]];
         var playerTwo = snap.val()[snapKeys[1]];
+        console.log(userID);
+        console.log("p1, p2")
+        console.log(playerOne === userID)
+        console.log(playerTwo === userID)
         var tempID = playerOne.split(" ").join("");
         $("#"+tempID).text(playerOne + " (Player 1)");
         tempID = playerTwo.split(" ").join("");
@@ -68,23 +102,25 @@ connectionsRef.on("value", function (snapshot) {
             currPlaying = true;
             $("#chat-box").removeClass("hidden");
             if (playerOne === userID){
-                playerNum = 1;
+                playerNum = "playerOne";
                 oppID = playerTwo;
             } else {
-                playerNum = 2;
+                playerNum = "playerTwo";
                 oppID = playerOne;
             }
+            showScore();
         }
         
     })
 });
 
 connectionsRef.on("child_removed", function(snapshot) {
-    if (snapshot.val() == oppID){
+    if (snapshot.val() === oppID){
         console.log("Disconnect:")
         console.log(snapshot.val())
         var dcMessage = snapshot.val() + " has disconnected.";
         oppID = undefined;
+        playersDefeated++;
         database.ref("/chat").push(dcMessage);
     }
     var tempID = snapshot.val().split(" ").join("");
