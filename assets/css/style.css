@@ -1,5 +1,7 @@
 body {
-    /* background-color: rgba(50, 50, 50, .9); */
+    background-color: rgba(200, 200, 200, .9);
+    background-image: url("../assets/image/background.jpg");
+    background-repeat: repeat;
 }
 
 .hidden {
@@ -15,12 +17,33 @@ body {
     height: 200px;
 }
 
-#messages {
-
+h1 {
+    font-family: 'Metamorphous', cursive;
 }
 
 .rpsChoice {
     height: 200px
+}
+
+button {
+    font-family: 'Cinzel Decorative', cursive !important;
+    font-weight: bold !important;
+}
+
+#username-message, #player-chat-header, #queue-header, .player-card-header{
+    font-family: 'Cinzel Decorative', cursive;
+}
+
+#connected, #chat-display, #chat-submit, #name-submit {
+    font-family: 'Ubuntu', sans-serif;
+}
+
+#messages {
+    font-family: 'Merienda', cursive;
+}
+
+.player-card-body {
+    font-family: 'Metamorphous', cursive;
 }
 
 #chat-display {
@@ -37,5 +60,5 @@ p {
     margin: 0;
     padding: 0;
     padding: 2px;
-    margin-top: 2px;
+    margin-top: 1px;
 }

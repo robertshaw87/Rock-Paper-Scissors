@@ -166,41 +166,6 @@ database.ref("/chat").on("child_added", function (childSnapshot, prevChildKey) {
     $("#chat-display").scrollTop($("#chat-display").prop("scrollHeight"));
 })
 
-$(document).on("click", "#name-submit", function(event){
-    event.preventDefault();
-    if (inQueue){
-    userName = $("#name-input").val().trim();
-    $("#name-input").val("");
-    $("#rps-body").removeClass("hidden");
-    $("#start-username").addClass("hidden");
-    $("#chat-display").scrollTop($("#chat-display").prop("scrollHeight"));
-    generateHash();
-    } else {
-        $("#username-message").text("You're not yet connected! Please try again.")
-    }
-});
-
-$(document).on("click", "#chat-submit", function(event){
-    event.preventDefault();
-    var chat = userID + ": " + $("#chat-input").val().trim();
-    $("#chat-input").val("");
-    if (currPlaying) {
-        database.ref("/chat").push(chat);
-    }
-});
-
-$(document).on("click", ".rpsChoice", function(event){
-    choice = $(this).data("rps");
-    console.log(choice)
-
-    messageArea("You chose " + choice + ". Waiting on your opponent.");
-    database.ref("/rps/" + playerNum).set({
-        name: userID,
-        rps: choice,
-        ready: true
-    })
-})
-
 database.ref("/rps").on("value", function(snapshot){
     console.log(snapshot.val())
     if (snapshot.val()[opponentNum] && snapshot.val()[playerNum]){
@@ -243,4 +208,39 @@ database.ref("/rps").on("value", function(snapshot){
             }
         }
     }
+})
+
+$(document).on("click", "#name-submit", function(event){
+    event.preventDefault();
+    if (inQueue){
+    userName = $("#name-input").val().trim();
+    $("#name-input").val("");
+    $("#rps-body").removeClass("hidden");
+    $("#start-username").addClass("hidden");
+    $("#chat-display").scrollTop($("#chat-display").prop("scrollHeight"));
+    generateHash();
+    } else {
+        $("#username-message").text("You're not yet connected! Please try again.")
+    }
+});
+
+$(document).on("click", "#chat-submit", function(event){
+    event.preventDefault();
+    var chat = userID + ": " + $("#chat-input").val().trim();
+    $("#chat-input").val("");
+    if (currPlaying) {
+        database.ref("/chat").push(chat);
+    }
+});
+
+$(document).on("click", ".rpsChoice", function(event){
+    choice = $(this).data("rps");
+    console.log(choice)
+
+    messageArea("You chose " + choice + ". Waiting on your opponent.");
+    database.ref("/rps/" + playerNum).set({
+        name: userID,
+        rps: choice,
+        ready: true
+    })
 })
