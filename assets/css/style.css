@@ -1,7 +1,8 @@
 body {
-    background-color: rgba(200, 200, 200, .9);
-    background-image: url("../assets/image/background.jpg");
+    background-color: rgba(250, 250, 250, .9);
+    background-image: url("../images/background.jpg");
     background-repeat: repeat;
+    background-blend-mode: lighten;
 }
 
 .hidden {
@@ -22,7 +23,16 @@ h1 {
 }
 
 .rpsChoice {
-    height: 200px
+    height: 200px;
+    animation-name: swing;
+    animation-duration: 2.6s;
+    animation-iteration-count: infinite;
+}
+
+.rpsChoice:hover {
+    animation-name: pulse;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
 }
 
 button {
@@ -56,9 +66,59 @@ button {
     overflow-y: scroll;
 }
 
+#rps-body {
+    animation-name: slide;
+    animation-duration: .9s;
+    animation-iteration-count: 1;
+}
+
 p {
     margin: 0;
     padding: 0;
     padding: 2px;
     margin-top: 1px;
+}
+
+.rpsWait {
+    animation: rpsWait;
+    animation-duration: 1.2s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes rpsWait {
+    50% {
+        transform: translateY(10%);
+    }
+    100% {
+        transform: translateY(0);
+    }
+    
+}
+
+@keyframes pulse {
+    50% {
+        transform: scale(1.1)
+    }
+}
+
+@keyframes swing {
+    33% {
+        transform: rotate(-10deg) translateY(-2%);
+    }
+    67% {
+        transform: rotate(10deg) translateY(2%);
+    }
+}
+
+@keyframes slide {
+    0%{
+        transform: translateY(200%);
+    }
+    100%{
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 575.98px) { 
+
 }
