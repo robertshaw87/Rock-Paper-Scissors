@@ -118,7 +118,7 @@ connectionsRef.on("value", function (snapshot) {
         $("#"+tempID).text(playerOne + " (Player 1)");
         tempID = playerTwo.split(" ").join("");
         $("#"+tempID).text(playerTwo + " (Player 2)");
-        if (playerOne === userID || playerTwo === userID){
+        if ((playerOne === userID || playerTwo === userID) && !currPlaying){
             currPlaying = true;
             $("#chat-box").removeClass("hidden");
             if (playerOne === userID){
@@ -150,6 +150,7 @@ connectionsRef.on("child_removed", function(snapshot) {
         messageArea("You have conquered " + oppID + "! Congratulations.")
         oppID = undefined;
         playersDefeated++;
+        currPlaying = false;
         database.ref("/chat").push(dcMessage);
     }
     var tempID = snapshot.val().split(" ").join("");
@@ -167,7 +168,6 @@ database.ref("/chat").on("child_added", function (childSnapshot, prevChildKey) {
 })
 
 database.ref("/rps").on("value", function(snapshot){
-    console.log(snapshot.val())
     if (snapshot.val()[opponentNum] && snapshot.val()[playerNum]){
         if (snapshot.val()[opponentNum].ready && snapshot.val()[playerNum].ready){
             var playerChoice = snapshot.val()[playerNum].rps;
@@ -235,8 +235,6 @@ $(document).on("click", "#chat-submit", function(event){
 
 $(document).on("click", ".rpsChoice", function(event){
     choice = $(this).data("rps");
-    console.log(choice)
-
     messageArea("You chose " + choice + ". Waiting on your opponent.");
     database.ref("/rps/" + playerNum).set({
         name: userID,
