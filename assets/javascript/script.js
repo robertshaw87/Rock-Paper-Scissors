@@ -2,7 +2,7 @@ var userID, userName, oppID;
 var inQueue = false;
 var currPlaying = false;
 var maxChat = 30;
-var playerNum, opponentNum, oppID;
+var playerNum, opponentNum, choice;
 var wins = 0;
 var losses = 0;
 var playersDefeated = 0;
@@ -130,8 +130,9 @@ connectionsRef.on("value", function (snapshot) {
                 opponentNum = "playerOne"
                 oppID = playerOne;
             }
+            $("#player-chat-header").text("Welcome to the game, " + userID)
             showScore();
-            messageArea("Get ready to ROCK, PAPER, SCISSORS!");
+            messageArea("You meet " + oppID + " on the field of battle. " +"Get ready to ROCK, PAPER, SCISSORS!");
             database.ref("/rps/" + playerNum).set({
                 name: userID,
                 rps: "none",
@@ -145,7 +146,8 @@ connectionsRef.on("value", function (snapshot) {
 
 connectionsRef.on("child_removed", function(snapshot) {
     if (snapshot.val() === oppID){
-        var dcMessage = snapshot.val() + " has disconnected.";
+        var dcMessage = snapshot.val() + " has been vanquished by " + userID + ".";
+        messageArea("You have conquered " + oppID + "! Congratulations.")
         oppID = undefined;
         playersDefeated++;
         database.ref("/chat").push(dcMessage);
@@ -188,20 +190,57 @@ $(document).on("click", "#chat-submit", function(event){
 });
 
 $(document).on("click", ".rpsChoice", function(event){
+    choice = $(this).data("rps");
+    console.log(choice)
+
+    messageArea("You chose " + choice + ". Waiting on your opponent.");
     database.ref("/rps/" + playerNum).set({
         name: userID,
-        rps: $(this).data("rps"),
-        ready: false
+        rps: choice,
+        ready: true
     })
-    database.ref("/rps").once("value", function(snapshot){
-        console.log(snapshot.val())
-        if (snapshot.val()[opponentNum].ready){
-            alert("WEEEE")
-        } else {
-            database.ref("/rps/" + playerNum).update({
-                ready: true
-            })
-        }
+})
 
-    });
+database.ref("/rps").on("value", function(snapshot){
+    console.log(snapshot.val())
+    if (snapshot.val()[opponentNum] && snapshot.val()[playerNum]){
+        if (snapshot.val()[opponentNum].ready && snapshot.val()[playerNum].ready){
+            var playerChoice = snapshot.val()[playerNum].rps;
+            var opponentChoice = snapshot.val()[opponentNum].rps;
+            if ((playerChoice === "rock" && opponentChoice === "scissors") ||
+                (playerChoice === "paper" && opponentChoice === "rock") ||
+                (playerChoice === "scissors" && opponentChoice === "paper")){
+                    wins++;
+                    showScore();
+                    messageArea("Congratulations, " + userID + "! You defeated " + oppID + "'s " + opponentChoice + " with your " + playerChoice + "! Prepare for a rematch!");
+                    database.ref("/rps/" + playerNum).set({
+                        name: userID,
+                        rps: "none",
+                        ready: false
+                    })
+                    setTimeout(rpsSelect, 3000);
+            } else if ((opponentChoice === "rock" && playerChoice === "scissors") ||
+                        (opponentChoice === "paper" && playerChoice === "rock") ||
+                        (opponentChoice === "scissors" && playerChoice === "paper")){
+                    losses++;
+                    showScore();
+                    messageArea("You lost to " + oppID + "'s " + opponentChoice + " with your " + playerChoice + ". Better luck next time!");
+                    database.ref("/rps/" + playerNum).set({
+                        name: userID,
+                        rps: "none",
+                        ready: false
+                    })
+                    setTimeout(rpsSelect, 3000);
+            } else {
+                showScore();
+                messageArea("Both you and " + oppID + " chose " + playerChoice + "! Prepare for a rematch!");
+                database.ref("/rps/" + playerNum).set({
+                    name: userID,
+                    rps: "none",
+                    ready: false
+                })
+                setTimeout(rpsSelect, 3000);
+            }
+        }
+    }
 })
