@@ -22,6 +22,10 @@ h1 {
     font-family: 'Metamorphous', cursive;
 }
 
+#rps-logo {
+    height: 70px;
+}
+
 .rpsChoice {
     height: 200px;
     animation-name: swing;
@@ -120,5 +124,7 @@ p {
 }
 
 @media (max-width: 575.98px) { 
-
+    .rpsChoice {
+        height: 100px;
+    }
 }
