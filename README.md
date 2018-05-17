@@ -34,6 +34,10 @@ No installation needed! Just open the page in your preferred browser.
 
 * [Google Fonts](https://fonts.google.com/) - Font repository
 
+## Challenges
+
+This was my first time working extensively with Firebase, so I had some issues with the logic flow neccesary to make my app do everything I wanted it to do. Thankfully, I managed to work through it by leaning heavily on the documentation and other online resources. This was a great challenge!
+
 ## Authors
 
 * **Robert Shaw** - *Initial work* - [robertshaw87](https://github.com/robertshaw87)
