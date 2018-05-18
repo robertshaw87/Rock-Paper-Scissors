@@ -43,7 +43,7 @@ In order to handle the asynchronous nature of two different people playing, I en
 
 ![Queue](assets/images/queue.PNG "Queue")
 
-I created a list of connected players to track the queue. Each time a new player enters or leaves, I have the players check to see if someone needs to moved up into the game room. If one of the players leave, the remaining player evaluates the queue and populates the game room with him or herself and the first person in the queue. In the case of there not being anyone in the queue (and thus no players in the game room running the queue logic) the first person to enter the queue automatically gets placed in the game room.
+I created a list of connected players on Firebase to track the queue. Each time a new player enters or leaves, I have the players check to see if someone needs to moved up into the game room. If one of the players leave, the remaining player evaluates the queue and populates the game room with him or herself and the first person in the queue. In the case of there not being anyone in the queue (and thus no players in the game room running the queue logic) the first person to enter the queue automatically gets placed in the game room.
 
 ## Authors
 
